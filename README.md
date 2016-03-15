@@ -4,28 +4,28 @@ This is a collection of a few simple scripts I wrote for myself while implementi
 
 ## The problem
 
-I got used to writing extensive tests for every function I write (in Objective-C or in Swift), and was missing the same possibility while developing for MSSQL. There are quite a few unit-testing frameworks for MSSQL available (Google), but none of them appeared simple enough for me. I wanted something really simple I could understand and trust, possibly, for a cost of having to write slightly more complicated tests, with less automation.
+I got used to writing extensive tests for every function I write (in Objective-C or in Swift), and was missing the same possibility while developing for MSSQL. There are quite a few unit-testing frameworks for MSSQL available (...), but none of them appeared simple enough for me. I wanted something really simple I could understand and trust, possibly, for a cost of having to write slightly more complicated tests, with less automation.
 
 ## The solution
 
-The solution I finally arrived at consisted of the following parts:
+The solution I finally arrived at consists of the following parts:
 
 * The test suite executor/runner: special stored procedure installed in a separate database schema;
 * The suite of tests for every SP/function/trigger.
 
-Test suite executor is invoked with this command:
+Test suite executor is invoked with the command:
 
 ```SQL
 exec test._run_tests
 ```
 
-It has an optional parameter that allow running specific test case:
+It has an optional parameter that allows running specific test case:
 
 ```SQL
 exec test._run_tests @testcase='test.[testcase trg_iu_chat_message_user_exists aborts insert if user is not participating in chat]'
 ```
 
-The executor finds all stored procedures in namespace `[test]` with the name matching `testcase%` pattern, and executes each one in a separate transaction. If testcase succeeds, it increases the count and proceeds to the next testcase. In case of any test failing, the testsuite is terminated. After each testcase is finished either with success or failure, the transaction is rolled back, so any change introduced by running tests does not get into the database. The initial database state is not controlled by the scripts however, so take care of any existing data/primary keys that could prevent tests from being run.
+The executor finds all stored procedures in namespace `[test]` with the name matching `testcase%` pattern, and executes each one in a separate transaction. If testcase succeeds, it increases the count of succeeded tests and proceeds to the next testcase. In case of any test failing, the testsuite is terminated. After each testcase is finished either with success or failure, the transaction is rolled back, so any change introduced by running tests does not get into the database. The initial database state is not controlled by the scripts however, so take care of any existing data/primary keys that could prevent tests from being run.
 
 ## Samples
 
