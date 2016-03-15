@@ -97,7 +97,7 @@ After execution of `test.[testcase usp_parent_login]` test suite the console out
 ```
 ```
 
-## What if my code (trigger, for example) contains `rollback` or `raiserror` by its own, is it possible to write a test for this case?
+### What if my code (trigger, for example) contains `rollback` or `raiserror` by its own, is it possible to write a test for this case?
 
 Yes, it should be possible.
 
